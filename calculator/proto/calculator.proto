@@ -4,15 +4,24 @@ package calculator;
 
 option go_package = "github.com/wagnergaldino/grpc-go-master-course/calculator/proto";
 
-message CalculatorRequest {
+message SumRequest {
     int32 first_number = 1;
     int32 second_number = 2;
 }
 
-message CalculatorResponse {
+message SumResponse {
+    int32 result = 1;
+}
+
+message PrimeRequest {
+    int32 number = 1;
+}
+
+message PrimeResponse {
     int32 result = 1;
 }
 
 service CalculatorService {
-    rpc Sum (CalculatorRequest) returns (CalculatorResponse);
+    rpc Sum (SumRequest) returns (SumResponse);
+    rpc Prime (PrimeRequest) returns (stream PrimeResponse);
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 
 	pb "github.com/wagnergaldino/grpc-go-master-course/calculator/proto"
@@ -34,4 +35,30 @@ func (s *Server) Prime(in *pb.PrimeRequest, stream pb.CalculatorService_PrimeSer
 	}
 
 	return nil
+}
+
+func (s *Server) Avg(stream pb.CalculatorService_AvgServer) error {
+	log.Printf("Avg function was invoked")
+
+	var cont, soma int32
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.AvgResponse{
+				Result: float64(soma) / float64(cont),
+			})
+		}
+
+		if err != nil {
+			log.Fatalf("Error while reading client stream: %v\n", err)
+		}
+
+		log.Printf("Receiving request %v\n", req)
+
+		cont++
+		soma += int32(req.Number)
+
+		fmt.Printf("Avg = %f\n", float64(soma)/float64(cont))
+	}
 }

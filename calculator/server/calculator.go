@@ -62,3 +62,30 @@ func (s *Server) Avg(stream pb.CalculatorService_AvgServer) error {
 		fmt.Printf("Avg = %f\n", float64(soma)/float64(cont))
 	}
 }
+
+func (s *Server) Max(stream pb.CalculatorService_MaxServer) error {
+	log.Printf("Max function was invoked")
+
+	var max int32
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			log.Fatalf("Error while reading client stream: %v\n", err)
+		}
+
+		log.Printf("Receiving request %v\n", req)
+		if req.Number > max {
+			max = req.Number
+			err = stream.Send(&pb.MaxResponse{
+				Result: max,
+			})
+			if err != nil {
+				log.Fatalf("Error while sending data to client: %v\n", err)
+			}
+		}
+	}
+}

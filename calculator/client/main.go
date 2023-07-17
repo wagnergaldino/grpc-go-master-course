@@ -24,4 +24,6 @@ func main() {
 	doPrime(c)
 	doAvg(c)
 	doMax(c)
+	doSqrt(c, 25)
+	doSqrt(c, -25)
 }
